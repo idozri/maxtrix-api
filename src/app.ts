@@ -16,9 +16,11 @@ app.use(cors(corsOptions));
 app.get('/whoami', async (req: Request, res: Response, next: NextFunction) => {
   const name: string = req.query.name as string;
 
-  if (!name) {
+  if (!/^[A-Za-z]*$/.test(name))
+    return res.status(400).json({ err: 'Name must be in English' });
+
+  if (!name)
     return res.status(400).json({ err: 'Please provide a name to guess.' });
-  }
 
   try {
     const mostLikelyNationality = await getMostLikelyNationality(name);
